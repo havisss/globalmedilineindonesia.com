@@ -23,43 +23,13 @@
 @php
     $categories = ['Laboratory Automation', 'Immunoassay', 'Hematology', 'Molecular', 'Urinalysis', 'Hemostasis', 'Clinical Chemistry', 'Pathology'];
 
-    $products = [
-        [
-            'model' => 'D600',
-            'title' => 'Automatic Digital PCR System',
-            'desc'  => 'Fully integrated droplet generation, amplification and reading for absolute quantification without standard curves.',
-            'tag'   => 'Digital PCR',
-            'image' => 'images/product-dpcr.jpg',
-        ],
-        [
-            'model' => 'EX96',
-            'title' => 'Nucleic Acid Extraction System',
-            'desc'  => 'High-throughput magnetic bead extraction processing up to 96 samples in a single, contamination-controlled run.',
-            'tag'   => 'Sample Prep',
-            'image' => 'images/product-extract96.jpg',
-        ],
-        [
-            'model' => 'EX32',
-            'title' => 'Compact Extraction Workstation',
-            'desc'  => 'A bench-friendly 32-sample extractor with touch-screen workflows, ideal for decentralised and mid-size labs.',
-            'tag'   => 'Sample Prep',
-            'image' => 'images/product-extract32.jpg',
-        ],
-        [
-            'model' => 'qPCR',
-            'title' => 'Real-time PCR Reagent Kits',
-            'desc'  => 'Validated assays for infectious disease, oncology and genetic screening — optimised for speed and sensitivity.',
-            'tag'   => 'Reagents',
-            'image' => 'images/product-reagents.jpg',
-        ],
-        [
-            'model' => 'H800',
-            'title' => 'Automated Hematology Analyzer',
-            'desc'  => 'Five-part differential CBC with continuous loading and smart flagging for busy hospital laboratories.',
-            'tag'   => 'Hematology',
-            'image' => 'images/product-hematology.jpg',
-        ],
-    ];
+    if (!isset($products) || (is_object($products) && method_exists($products, 'isEmpty') && $products->isEmpty())) {
+        try {
+            $products = \App\Models\Product::all();
+        } catch (\Throwable $e) {
+            $products = collect();
+        }
+    }
 @endphp
 
 {{-- =====================================================
@@ -109,41 +79,37 @@
 
             <nav class="menu-nav" aria-label="Main">
                 <div class="menu-group" data-stagger>
-                    <h2><a href="#">About Us</a></h2>
+                    <h2><a href="{{ url('/about') }}" class="close-menu">PERUSAHAAN</a></h2>
                     <ul>
-                        <li><a href="#">Company Profile</a></li>
-                        <li><a href="#">Sustainability</a></li>
-                        <li><a href="#">Our History</a></li>
-                        <li><a href="#">Certifications</a></li>
+                        <li><a href="{{ url('/about/profil-perusahaan') }}" class="close-menu">Profil Perusahaan</a></li>
+                        <li><a href="{{ url('/about/landasan-perusahaan') }}" class="close-menu">Landasan Perusahaan</a></li>
+                        <li><a href="{{ url('/about/nilai-tambah') }}" class="close-menu">Nilai Tambah</a></li>
                     </ul>
                 </div>
                 <div class="menu-group" data-stagger>
-                    <h2><a href="#catalog">Solutions</a></h2>
+                    <h2><a href="{{ url('/services') }}" class="close-menu">LAYANAN</a></h2>
                     <ul>
-                        @foreach ($categories as $cat)
-                            <li><a href="#catalog">{{ $cat }}</a></li>
-                        @endforeach
+                        <li><a href="{{ url('/services/portofolio-pelayanan') }}" class="close-menu">Portofolio Pelayanan</a></li>
+                        <li><a href="{{ url('/services/sektor-pelayanan') }}" class="close-menu">Sektor Pelayanan</a></li>
+                        <li><a href="{{ url('/services/layanan-teknis') }}" class="close-menu">Layanan Teknis</a></li>
                     </ul>
                 </div>
                 <div class="menu-group" data-stagger>
-                    <h2><a href="#">Service Center</a></h2>
+                    <h2><a href="{{ url('/contact') }}" class="close-menu">KONTAK</a></h2>
                     <ul>
-                        <li><a href="#">Quality Control</a></li>
-                        <li><a href="#">Service Network</a></li>
-                        <li><a href="#">Technical Documents</a></li>
-                        <li><a href="#">Training</a></li>
+                        <li><a href="{{ url('/contact') }}" class="close-menu">Hubungi Kami</a></li>
                     </ul>
                 </div>
             </nav>
 
             <aside class="menu-aside" data-stagger>
-                <a href="#contact" class="cta-link">
-                    Contact Us
+                <a href="{{ url('/contact') }}" class="cta-link close-menu">
+                    Hubungi Kami
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
                 </a>
-                <a href="#" class="join">Careers</a>
                 <address>
                     <span>Head Office</span>
+                    PT. GLOBAL MEDILINE INDONESIA<br>
                     Jakarta, Indonesia<br>
                     +62 21 0000 0000<br>
                     info@globalmedilineindonesia.com
@@ -157,8 +123,28 @@
     {{-- =====================================================
          2. HERO
     ===================================================== --}}
+    @php
+        // hero1 falls back to the original hero.jpg if hero1.jpg doesn't exist
+        $heroImages = collect(['hero1.jpg', 'hero2.jpg', 'hero3.jpg', 'hero4.jpg'])
+            ->map(fn ($f) => ($f === 'hero1.jpg' && !file_exists(public_path('images/hero1.jpg'))) ? 'hero.jpg' : $f)
+            ->filter(fn ($f) => file_exists(public_path('images/' . $f)))
+            ->values();
+    @endphp
     <section class="hero" id="top" aria-labelledby="heroTitle">
-        <div class="hero-bg" aria-hidden="true" style="background-image: url('{{ asset('images/hero.jpg') }}');"></div>
+        <div class="hero-slides" id="heroSlides" aria-hidden="true">
+            @foreach ($heroImages as $i => $img)
+                <div class="hero-bg {{ $i === 0 ? 'is-active' : '' }}" style="background-image: url('{{ asset('images/' . $img) }}');"></div>
+            @endforeach
+        </div>
+
+        @if ($heroImages->count() > 1)
+            <div class="hero-dots" id="heroDots" role="group" aria-label="Hero background">
+                @foreach ($heroImages as $i => $img)
+                    <button type="button" class="hero-dot {{ $i === 0 ? 'is-active' : '' }}" id="heroDot{{ $i + 1 }}" data-index="{{ $i }}" aria-label="Show background {{ $i + 1 }}"><span></span></button>
+                @endforeach
+            </div>
+        @endif
+
         {{-- Visually hidden heading for SEO / screen readers; the hero itself shows only the image --}}
         <h1 id="heroTitle" class="sr-only">Global Mediline Indonesia — Molecular Diagnostics Solutions</h1>
     </section>
@@ -178,13 +164,6 @@
                     to deliver integrated diagnostic systems — instruments, reagents and expert service —
                     built on a single promise: results you can rely on.
                 </p>
-            </div>
-
-            <div class="stats">
-                <div class="stat reveal"><div class="stat-num"><span data-count="15">0</span><sup>+</sup></div><p>Years of clinical expertise</p></div>
-                <div class="stat reveal" data-delay="1"><div class="stat-num"><span data-count="1200">0</span><sup>+</sup></div><p>Laboratories served nationwide</p></div>
-                <div class="stat reveal" data-delay="2"><div class="stat-num"><span data-count="34">0</span></div><p>Provinces with service coverage</p></div>
-                <div class="stat reveal" data-delay="3"><div class="stat-num"><span data-count="24">0</span><sup>/7</sup></div><p>Technical support hotline</p></div>
             </div>
         </div>
     </section>
@@ -209,22 +188,45 @@
                 <div class="swiper catalog-swiper">
                     <div class="swiper-wrapper">
                         @php
-                            $loopProducts = array_merge($products, $products, $products, $products);
+                            $items = $products instanceof \Illuminate\Support\Collection ? $products->all() : (array) $products;
+                            $count = count($items);
+                            $multiplier = $count < 8 ? ($count < 3 ? 6 : 4) : 2;
+                            $loopProducts = [];
+                            if ($count > 0) {
+                                for ($k = 0; $k < $multiplier; $k++) {
+                                    foreach ($items as $item) {
+                                        $loopProducts[] = $item;
+                                    }
+                                }
+                            }
                         @endphp
                         @foreach ($loopProducts as $i => $product)
+                            @php
+                                $pName = is_object($product) ? $product->name : ($product['title'] ?? $product['name'] ?? '');
+                                $pDesc = is_object($product) ? ($product->description ?? '') : ($product['desc'] ?? '');
+                                $pPrice = is_object($product) ? (float) $product->price : (float) ($product['price'] ?? 0);
+                                $pUnit = is_object($product) ? ($product->unit ?? 'Pcs') : ($product['unit'] ?? 'Pcs');
+                                $pImg = is_object($product) ? $product->image_url : asset($product['image'] ?? 'images/product-reagents.jpg');
+                                $pFormattedPrice = is_object($product) ? $product->formatted_price : ($pPrice > 0 ? 'Rp ' . number_format($pPrice, 0, ',', '.') : null);
+                            @endphp
                             <div class="swiper-slide">
                                 <article class="product-card">
                                     <div class="product-card-header">
                                         <div class="product-titles">
-                                            <h3 class="product-model">{{ $product['model'] }}</h3>
-                                            <p class="product-subtitle">{{ $product['title'] }}</p>
+                                            <h3 class="product-model" title="{{ $pName }}">{{ $pName }}</h3>
+                                            @if($pDesc)
+                                                <p class="product-subtitle">{{ $pDesc }}</p>
+                                            @endif
+                                            @if($pPrice > 0)
+                                                <span class="product-price-badge">{{ $pFormattedPrice }} / {{ $pUnit }}</span>
+                                            @endif
                                         </div>
-                                        <button class="product-options" aria-label="More options">
+                                        <button class="product-options" aria-label="Detail {{ $pName }}" type="button">
                                             <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
                                         </button>
                                     </div>
                                     <div class="product-media">
-                                        <img src="{{ asset($product['image']) }}" alt="{{ $product['title'] }}" loading="lazy">
+                                        <img src="{{ $pImg }}" alt="{{ $pName }}" loading="lazy">
                                     </div>
                                 </article>
                             </div>
@@ -384,7 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && menu.classList.contains('is-open')) setMenu(false);
     });
-    menu.querySelectorAll('a[href^="#"]').forEach((a) => a.addEventListener('click', () => setMenu(false)));
+    menu.querySelectorAll('a[href^="#"], .close-menu').forEach((a) => a.addEventListener('click', () => setMenu(false)));
 
     /* ---------- Reveal on scroll ---------- */
     const revealObserver = new IntersectionObserver((entries) => {
@@ -417,6 +419,64 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { threshold: 0.6 });
     document.querySelectorAll('[data-count]').forEach((el) => countObserver.observe(el));
 
+    /* ---------- Hero background slideshow ---------- */
+    (() => {
+        const slides = document.querySelectorAll('#heroSlides .hero-bg');
+        const dots = document.querySelectorAll('#heroDots .hero-dot');
+        if (slides.length < 2) return;
+
+        const INTERVAL = 6000; // ms per slide
+        const FADE = 1600;     // must match .hero-bg opacity transition
+        document.querySelector('.hero').style.setProperty('--hero-interval', `${INTERVAL}ms`);
+
+        let index = 0;
+        let timer = null;
+
+        const go = (next) => {
+            if (next === index) return;
+            const prev = slides[index];
+            const incoming = slides[next];
+
+            // restart Ken Burns cleanly even if this slide is still fading out
+            incoming.classList.remove('is-leaving', 'is-active');
+            void incoming.offsetWidth;
+            incoming.classList.add('is-active');
+
+            prev.classList.remove('is-active');
+            prev.classList.add('is-leaving');
+            setTimeout(() => {
+                if (!prev.classList.contains('is-active')) prev.classList.remove('is-leaving');
+            }, FADE);
+
+            dots.forEach((d, i) => {
+                d.classList.remove('is-active');
+                d.setAttribute('aria-current', 'false');
+            });
+            if (dots[next]) {
+                void dots[next].offsetWidth; // restart progress bar
+                dots[next].classList.add('is-active');
+                dots[next].setAttribute('aria-current', 'true');
+            }
+            index = next;
+        };
+
+        const start = () => {
+            clearInterval(timer);
+            timer = setInterval(() => go((index + 1) % slides.length), INTERVAL);
+        };
+
+        dots.forEach((dot) => dot.addEventListener('click', () => {
+            go(parseInt(dot.dataset.index, 10));
+            start();
+        }));
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) clearInterval(timer); else start();
+        });
+
+        start();
+    })();
+
     /* ---------- Swiper catalog ---------- */
     const total = {{ count($products) }};
     const progress = document.getElementById('catalogProgress');
@@ -424,9 +484,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const updateMeta = (swiper) => {
         let realIndex = swiper.realIndex !== undefined ? swiper.realIndex : (swiper.activeIndex || 0);
-        const idx = (realIndex % total) + 1;
+        const idx = total > 0 ? ((realIndex % total) + 1) : 1;
         current.textContent = String(idx).padStart(2, '0');
-        progress.style.transform = `scaleX(${idx / total})`;
+        progress.style.transform = `scaleX(${total > 0 ? (idx / total) : 1})`;
     };
 
     new Swiper('.catalog-swiper', {
