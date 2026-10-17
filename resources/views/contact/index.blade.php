@@ -36,7 +36,7 @@
         </div>
         <div>
             <h4>Alamat Kantor</h4>
-            <p>Jl. Paku Sari VII, Sesetan</p>
+            <p>Jln. Paku Sari No. 09, Sesetan, Denpasar Selatan, Kota Denpasar, Bali</p>
         </div>
     </div>
 </div>

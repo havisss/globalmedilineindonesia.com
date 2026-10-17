@@ -58,6 +58,18 @@
 
             <nav class="menu-nav" aria-label="Main">
                 <div class="menu-group" data-stagger>
+                    <h2><a href="{{ url('/') }}" class="close-menu">HOME</a></h2>
+                    <ul>
+                        <li><a href="{{ url('/') }}" class="close-menu">Beranda</a></li>
+                    </ul>
+                </div>
+                <div class="menu-group" data-stagger>
+                    <h2><a href="{{ url('/products') }}" class="close-menu">PRODUK</a></h2>
+                    <ul>
+                        <li><a href="{{ url('/products') }}" class="close-menu">Katalog Produk</a></li>
+                    </ul>
+                </div>
+                <div class="menu-group" data-stagger>
                     <h2><a href="{{ url('/about') }}" class="close-menu">PERUSAHAAN</a></h2>
                     <ul>
                         <li><a href="{{ url('/about/profil-perusahaan') }}" class="close-menu">Profil Perusahaan</a></li>
@@ -89,8 +101,9 @@
                 <address>
                     <span>Head Office</span>
                     PT. GLOBAL MEDILINE INDONESIA<br>
-                    Jakarta, Indonesia<br>
-                    +62 21 0000 0000<br>
+                    Jln. Paku Sari No. 09, Sesetan<br>
+                    Denpasar Selatan, Kota Denpasar, Bali<br>
+                    0828872379723<br>
                     info@globalmedilineindonesia.com
                 </address>
             </aside>
@@ -139,6 +152,7 @@
             <div class="footer-col">
                 <h3>Quick Links</h3>
                 <ul class="footer-links">
+                    <li><a href="{{ url('/') }}">Beranda</a></li>
                     <li><a href="{{ url('/about/profil-perusahaan') }}">Profil Perusahaan</a></li>
                     <li><a href="{{ url('/services/portofolio-pelayanan') }}">Portofolio Pelayanan</a></li>
                     <li><a href="{{ url('/contact') }}">Hubungi Kami</a></li>
@@ -150,7 +164,7 @@
                 <ul class="footer-contact">
                     <li>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-6.2-7-12a7 7 0 1114 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
-                        <span>Jl. Paku Sari VII, Sesetan<br>Indonesia</span>
+                        <span>Jln. Paku Sari No. 09, Sesetan<br>Denpasar Selatan, Kota Denpasar, Bali</span>
                     </li>
                     <li>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1.9.4 1.8.7 2.7a2 2 0 01-.5 2.1L8 9.8a16 16 0 006 6l1.3-1.3a2 2 0 012.1-.4c.9.3 1.8.6 2.7.7a2 2 0 011.7 2z"/></svg>

@@ -8,6 +8,14 @@ Route::get('/', function () {
     return view('landing', compact('products'));
 });
 
+Route::get('/products', function () {
+    $products = Product::all();
+    return view('products.index', compact('products'));
+});
+
+Route::redirect('/katalog', '/products');
+Route::redirect('/katalog-produk', '/products');
+
 Route::redirect('/about', '/about/profil-perusahaan');
 
 Route::get('/about/profil-perusahaan', function () {

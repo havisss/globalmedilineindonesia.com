@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Molecular Diagnostics | {{ config('app.name', 'Global Mediline Indonesia') }}</title>
-    <meta name="description" content="Global Mediline Indonesia delivers precision molecular diagnostics — digital PCR, nucleic acid extraction, reagents and laboratory analyzers for hospitals and research labs.">
+    <title>In-Vitro Diagnostics | {{ config('app.name', 'Global Mediline Indonesia') }}</title>
+    <meta name="description" content="Global Mediline Indonesia delivers precision in-vitro diagnostics — clinical chemistry, hematology, immunology, reagents and laboratory analyzers for hospitals and research labs.">
 
     {{-- Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -79,6 +79,18 @@
 
             <nav class="menu-nav" aria-label="Main">
                 <div class="menu-group" data-stagger>
+                    <h2><a href="{{ url('/') }}" class="close-menu">HOME</a></h2>
+                    <ul>
+                        <li><a href="{{ url('/') }}" class="close-menu">Beranda</a></li>
+                    </ul>
+                </div>
+                <div class="menu-group" data-stagger>
+                    <h2><a href="{{ url('/products') }}" class="close-menu">PRODUK</a></h2>
+                    <ul>
+                        <li><a href="{{ url('/products') }}" class="close-menu">Katalog Produk</a></li>
+                    </ul>
+                </div>
+                <div class="menu-group" data-stagger>
                     <h2><a href="{{ url('/about') }}" class="close-menu">PERUSAHAAN</a></h2>
                     <ul>
                         <li><a href="{{ url('/about/profil-perusahaan') }}" class="close-menu">Profil Perusahaan</a></li>
@@ -110,8 +122,9 @@
                 <address>
                     <span>Head Office</span>
                     PT. GLOBAL MEDILINE INDONESIA<br>
-                    Jakarta, Indonesia<br>
-                    +62 21 0000 0000<br>
+                    Jln. Paku Sari No. 09, Sesetan<br>
+                    Denpasar Selatan, Kota Denpasar, Bali<br>
+                    0828872379723<br>
                     info@globalmedilineindonesia.com
                 </address>
             </aside>
@@ -124,29 +137,67 @@
          2. HERO
     ===================================================== --}}
     @php
-        // hero1 falls back to the original hero.jpg if hero1.jpg doesn't exist
-        $heroImages = collect(['hero1.jpg', 'hero2.jpg', 'hero3.jpg', 'hero4.jpg'])
-            ->map(fn ($f) => ($f === 'hero1.jpg' && !file_exists(public_path('images/hero1.jpg'))) ? 'hero.jpg' : $f)
-            ->filter(fn ($f) => file_exists(public_path('images/' . $f)))
+        $heroSlidesData = [
+            [
+                'image' => 'hero.jpg',
+                'tag'   => 'IN-VITRO & CLINICAL DIAGNOSTICS',
+                'title' => 'Precision You Can Trust',
+                'desc'  => 'Solusi instrumen diagnostik terpadu dan otomatisasi laboratorium medis terdepan di seluruh Indonesia.',
+            ],
+            [
+                'image' => 'hero2.jpg',
+                'tag'   => 'QUALITY REAGENTS & ASSAYS',
+                'title' => 'Accuracy in Every Test',
+                'desc'  => 'Reagen diagnostik berstandar tinggi yang memastikan sensitivitas dan keandalan hasil pada setiap analisis klinis.',
+            ],
+            [
+                'image' => 'hero3.jpg',
+                'tag'   => 'AUTOMATED WORKFLOW',
+                'title' => 'Empowering Healthcare Excellence',
+                'desc'  => 'Meningkatkan efisiensi kerja laboratorium medis melalui teknologi diagnostik pintar yang intuitif dan presisi.',
+            ],
+        ];
+
+        $heroSlides = collect($heroSlidesData)
+            ->filter(fn ($s) => file_exists(public_path('images/' . $s['image'])))
             ->values();
     @endphp
     <section class="hero" id="top" aria-labelledby="heroTitle">
         <div class="hero-slides" id="heroSlides" aria-hidden="true">
-            @foreach ($heroImages as $i => $img)
-                <div class="hero-bg {{ $i === 0 ? 'is-active' : '' }}" style="background-image: url('{{ asset('images/' . $img) }}');"></div>
+            @foreach ($heroSlides as $i => $slide)
+                <div class="hero-bg {{ $i === 0 ? 'is-active' : '' }}" style="background-image: url('{{ asset('images/' . $slide['image']) }}');"></div>
             @endforeach
         </div>
 
-        @if ($heroImages->count() > 1)
+        <div class="hero-gradient" aria-hidden="true"></div>
+
+        <div class="hero-content-wrap">
+            <div class="container hero-container">
+                <div class="hero-captions" id="heroCaptions">
+                    @foreach ($heroSlides as $i => $slide)
+                        <div class="hero-caption {{ $i === 0 ? 'is-active' : '' }}" data-index="{{ $i }}">
+                            <div class="hero-tag-badge">
+                                <span class="hero-tag-dot"></span>
+                                <span class="hero-tag-text">{{ $slide['tag'] }}</span>
+                            </div>
+                            <h2 class="hero-title">{{ $slide['title'] }}</h2>
+                            <p class="hero-desc">{{ $slide['desc'] }}</p>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+
+        @if ($heroSlides->count() > 1)
             <div class="hero-dots" id="heroDots" role="group" aria-label="Hero background">
-                @foreach ($heroImages as $i => $img)
-                    <button type="button" class="hero-dot {{ $i === 0 ? 'is-active' : '' }}" id="heroDot{{ $i + 1 }}" data-index="{{ $i }}" aria-label="Show background {{ $i + 1 }}"><span></span></button>
+                @foreach ($heroSlides as $i => $slide)
+                    <button type="button" class="hero-dot {{ $i === 0 ? 'is-active' : '' }}" id="heroDot{{ $i + 1 }}" data-index="{{ $i }}" aria-label="Slide {{ $i + 1 }}"><span></span></button>
                 @endforeach
             </div>
         @endif
 
         {{-- Visually hidden heading for SEO / screen readers; the hero itself shows only the image --}}
-        <h1 id="heroTitle" class="sr-only">Global Mediline Indonesia — Molecular Diagnostics Solutions</h1>
+        <h1 id="heroTitle" class="sr-only">Global Mediline Indonesia — In-Vitro Diagnostics Solutions</h1>
     </section>
 
     {{-- =====================================================
@@ -157,7 +208,7 @@
             <div class="intro-grid">
                 <div class="reveal">
                     <span class="eyebrow">Who we are</span>
-                    <h2 id="introTitle">A complete molecular workflow, <b>from sample to answer.</b></h2>
+                    <h2 id="introTitle">A complete in-vitro diagnostic workflow, <b>from sample to answer.</b></h2>
                 </div>
                 <p class="reveal" data-delay="1">
                     Global Mediline Indonesia partners with hospitals, reference laboratories and research institutes
@@ -204,10 +255,7 @@
                             @php
                                 $pName = is_object($product) ? $product->name : ($product['title'] ?? $product['name'] ?? '');
                                 $pDesc = is_object($product) ? ($product->description ?? '') : ($product['desc'] ?? '');
-                                $pPrice = is_object($product) ? (float) $product->price : (float) ($product['price'] ?? 0);
-                                $pUnit = is_object($product) ? ($product->unit ?? 'Pcs') : ($product['unit'] ?? 'Pcs');
                                 $pImg = is_object($product) ? $product->image_url : asset($product['image'] ?? 'images/product-reagents.jpg');
-                                $pFormattedPrice = is_object($product) ? $product->formatted_price : ($pPrice > 0 ? 'Rp ' . number_format($pPrice, 0, ',', '.') : null);
                             @endphp
                             <div class="swiper-slide">
                                 <article class="product-card">
@@ -216,9 +264,6 @@
                                             <h3 class="product-model" title="{{ $pName }}">{{ $pName }}</h3>
                                             @if($pDesc)
                                                 <p class="product-subtitle">{{ $pDesc }}</p>
-                                            @endif
-                                            @if($pPrice > 0)
-                                                <span class="product-price-badge">{{ $pFormattedPrice }} / {{ $pUnit }}</span>
                                             @endif
                                         </div>
                                         <button class="product-options" aria-label="Detail {{ $pName }}" type="button">
@@ -281,11 +326,11 @@
             <div class="footer-col">
                 <h3>Quick Links</h3>
                 <ul class="footer-links">
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#catalog">Products</a></li>
-                    <li><a href="#">Service Center</a></li>
-                    <li><a href="#">News &amp; Events</a></li>
-                    <li><a href="#">Careers</a></li>
+                    <li><a href="{{ url('/') }}">Beranda</a></li>
+                    <li><a href="{{ url('/about/profil-perusahaan') }}">Profil Perusahaan</a></li>
+                    <li><a href="#catalog">Katalog Produk</a></li>
+                    <li><a href="{{ url('/services/portofolio-pelayanan') }}">Portofolio Pelayanan</a></li>
+                    <li><a href="{{ url('/contact') }}">Hubungi Kami</a></li>
                 </ul>
             </div>
 
@@ -294,11 +339,11 @@
                 <ul class="footer-contact">
                     <li>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-6.2-7-12a7 7 0 1114 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
-                        <span>Jl. Example Raya No. 1<br>Jakarta 12345, Indonesia</span>
+                        <span>Jln. Paku Sari No. 09, Sesetan<br>Denpasar Selatan, Kota Denpasar, Bali</span>
                     </li>
                     <li>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1.9.4 1.8.7 2.7a2 2 0 01-.5 2.1L8 9.8a16 16 0 006 6l1.3-1.3a2 2 0 012.1-.4c.9.3 1.8.6 2.7.7a2 2 0 011.7 2z"/></svg>
-                        <a href="tel:+622100000000">+62 21 0000 0000</a>
+                        <a href="tel:0828872379723">0828872379723</a>
                     </li>
                     <li>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
@@ -422,11 +467,12 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ---------- Hero background slideshow ---------- */
     (() => {
         const slides = document.querySelectorAll('#heroSlides .hero-bg');
+        const captions = document.querySelectorAll('#heroCaptions .hero-caption');
         const dots = document.querySelectorAll('#heroDots .hero-dot');
         if (slides.length < 2) return;
 
-        const INTERVAL = 6000; // ms per slide
-        const FADE = 1600;     // must match .hero-bg opacity transition
+        const INTERVAL = 3000; // ms per slide
+        const FADE = 1200;     // transition duration
         document.querySelector('.hero').style.setProperty('--hero-interval', `${INTERVAL}ms`);
 
         let index = 0;
@@ -436,19 +482,36 @@ document.addEventListener('DOMContentLoaded', () => {
             if (next === index) return;
             const prev = slides[index];
             const incoming = slides[next];
+            const prevCap = captions[index];
+            const incomingCap = captions[next];
 
-            // restart Ken Burns cleanly even if this slide is still fading out
+            // Image transition
             incoming.classList.remove('is-leaving', 'is-active');
             void incoming.offsetWidth;
             incoming.classList.add('is-active');
 
             prev.classList.remove('is-active');
             prev.classList.add('is-leaving');
+
+            // Caption text transition
+            if (prevCap && incomingCap) {
+                prevCap.classList.remove('is-active');
+                prevCap.classList.add('is-leaving');
+
+                incomingCap.classList.remove('is-leaving', 'is-active');
+                void incomingCap.offsetWidth;
+                incomingCap.classList.add('is-active');
+
+                setTimeout(() => {
+                    if (!prevCap.classList.contains('is-active')) prevCap.classList.remove('is-leaving');
+                }, FADE);
+            }
+
             setTimeout(() => {
                 if (!prev.classList.contains('is-active')) prev.classList.remove('is-leaving');
             }, FADE);
 
-            dots.forEach((d, i) => {
+            dots.forEach((d) => {
                 d.classList.remove('is-active');
                 d.setAttribute('aria-current', 'false');
             });
